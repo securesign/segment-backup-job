@@ -5,6 +5,7 @@ LABEL io.k8s.display-name="segment collection"
 LABEL io.openshift.tags="segment,segment-collection"
 LABEL summary="Provides the segment data collection service"
 LABEL com.redhat.component="segment-collection"
+LABEL name="segment-collection"
 
 COPY . /opt/app-root/src
 
