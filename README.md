@@ -1,0 +1,1 @@
+A simple cronjob to send Prometheus metrics to the segment API
