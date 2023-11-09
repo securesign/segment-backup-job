@@ -1,0 +1,22 @@
+{
+  "name": "segment-backup-job",
+  "version": "1.0.0",
+  "description": "This repository will send metrics back to segment as a containerized backup job",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/securesign/segment-backup-job.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/securesign/segment-backup-job/issues"
+  },
+  "homepage": "https://github.com/securesign/segment-backup-job#readme",
+  "dependencies": {
+    "axios": "^1.6.1"
+  }
+}

@@ -63,4 +63,6 @@ echo "fulcio_new_certs: $fulcio_new_certs" >> ./tmp
 echo "rekor_new_entries: $rekor_new_entries" >> ./tmp
 echo "rekor_qps_by_api: " $rekor_qps_by_api >> ./tmp
 
-python3 ./main.py
+# python3 ./main.py
+npm install ./
+node main.js
