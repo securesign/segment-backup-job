@@ -14,22 +14,22 @@ oc create secret generic pull-secret -n sigstore-monitoring --from-file=$HOME/Do
 export version=25
 
 export segment_backup_job_repo_path=$(pwd) #if your working from another directory swap this value out
-export sigstore_ocp_path="" # Set absolute path to sigstore-ocp
+export sigstore_ocp_path="" # Set absolute path to sigstore-ocp, used for automating editing of the values file
 
 # my podman is broken due to QEMU issues (run mv Containerfile Dockerfile once)
-docker build $segment_backup_job_repo_path --platform=linux/amd64 -t quay.io/grpereir/segment-backup-job:1.0.$version
-docker push quay.io/grpereir/segment-backup-job:1.0.$version
+podman build $segment_backup_job_repo_path --platform=linux/amd64 -t quay.io/grpereir/segment-backup-job:1.0.$version
+podman push quay.io/grpereir/segment-backup-job:1.0.$version #my quay, can swap out with your repo
 version=$(( $version + 1));
 
 # LOCAL DEV
 
-docker run -it --rm quay.io/grpereir/segment-backup-job:1.0.$version /bin/bash
+podman run -it --rm quay.io/grpereir/segment-backup-job:1.0.$version /bin/bash
 
 #CHART TESTING
 
-code $sigstore_ocp_path/charts/trusted-artifact-signer/values.yaml # replace value
-/usr/bin/open -a "/Applications/Google Chrome.app" 'https://quay.io/repository/grpereir/segment-backup-job?tab=tags'
-oc delete cronjob segment-backup-job -n sigstore-monitoring; oc delete job segment-backup-job -n sigstore-monitoring
+code $sigstore_ocp_path/charts/trusted-artifact-signer/values.yaml # replace lines 17 and possibly 16
+/usr/bin/open -a "/Applications/Google Chrome.app" 'https://quay.io/repository/grpereir/segment-backup-job?tab=tags' #automated for mac but do this based on your OS
+oc delete cronjob segment-backup-job -n sigstore-monitoring; oc delete job segment-backup-job -n sigstore-monitoring #if you have issues with permssions here run this as non-service account oc user
 $segment_backup_job_repo_path/tas-easy-install.sh
 
 ```
@@ -46,7 +46,7 @@ export secret_name_for_sa=$( oc get sa segment-backup-job -n sigstore-monitoring
 
 export sa_token=$(oc get secret $secret_name_for_sa -n sigstore-monitoring -o json | jq .metadata.annotations."\"openshift.io/token-secret.value\"" | cut -d "\"" -f 2)
 export server=$(oc whoami -t)
-echo "oc login --token=$sa_token --server=$server" # spits out the login command for teh SA, used in terminal 2
+echo "oc login --token=$sa_token --server=$server" # spits out the login command for the SA, used in terminal 2
 
 ```
 

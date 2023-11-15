@@ -3,6 +3,52 @@
 # RUN_TYPE="nightly" #debugging                       #
 #######################################################
 
+max_attempts=60
+sleep_interval=5
+
+check_thanos_querier_status() {
+    local attempts=0
+
+    while [[ $attempts -lt $max_attempts ]]; do
+        route_exists=$(oc get route thanos-querier -n openshift-monitoring --ignore-not-found=true)
+        if [[ -n $route_exists ]]; then
+            echo "route \"thanos-querier\" is up and running in namespace "openshift-monitoring"."
+            return 0
+        else
+            echo "Thanos Querier route is not up yet. Retrying in $sleep_interval seconds..."
+        fi
+        sleep $sleep_interval
+        attempts=$((attempts + 1))
+    done
+
+    echo "Timed out. Thanos Querier route did not spin up in the \"openshift-monitoring\" namespace."
+    return 1
+}
+
+check_pull_secret() {
+    local attempts=0
+
+    while [[ $attempts -lt $max_attempts ]]; do
+        pull_secret_exists=$(oc get secret pull-secret -n sigstore-monitoring --ignore-not-found=true)
+        if [[ -n $pull_secret_exists ]]; then
+            echo "secret \"pull-secret\" in namespace \"sigstore-monitoring\" exists, proceeding."
+            return 0
+        else
+            echo "Waiting for secret \"pull-secret\" in namespace \"sigstore-monitoring\" to exist..."
+            sleep $sleep_interval
+            attempts=$((attempts + 1))
+        fi
+    done
+
+    echo "Timed out. Cannot find secret \"pull-secret\" in namespace \"sigstore-monitoring\"."
+    echo "Please download the pull-secret from \`https://console.redhat.com/application-services/trusted-content/artifact-signer\`
+    and create a secret from it: \`oc create secret generic pull-secret -n sigstore-monitoring --from-file=\$HOME/Downloads/pull-secret.json\`."
+    return 1
+}
+
+check_pull_secret
+check_thanos_querier_status
+
 pull_secret_exists=$(oc get secret  pull-secret -n sigstore-monitoring --ignore-not-found=true)
 
 if [[ -z $pull_secret_exists ]]; then

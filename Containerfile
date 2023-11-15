@@ -16,6 +16,6 @@ RUN mkdir /opt/app-root/src/bin && cd /opt/app-root/src/bin && \
     curl -L https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable/openshift-client-linux.tar.gz > /tmp/oc/openshift-client-linux.tar.gz && cd /tmp/oc && \
     tar xvf openshift-client-linux.tar.gz && mv /tmp/oc/oc /opt/app-root/src/bin/oc && \
     cd /opt/app-root/src/ && export PATH=$PATH:/opt/app-root/src/bin && \
-    python3 -m pip install --upgrade pip && pip3 install -r requirements.txt --force-reinstall
+    /opt/app-root/bin/pip install --upgrade pip && /opt/app-root/bin/pip install -r /opt/app-root/src/requirements.txt --force-reinstall
 
 USER 1001
