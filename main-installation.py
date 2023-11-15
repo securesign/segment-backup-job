@@ -1,4 +1,4 @@
-import analytics
+import segment.analytics as analytics
 import os
 import logging
 import datetime
