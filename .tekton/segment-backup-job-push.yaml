@@ -29,6 +29,8 @@ spec:
     value: '{{revision}}'
   - name: prefetch-input
     value: '{"path": ".", "type": "pip", "requirements_build_files": ["requirements-build.txt", "requirements.txt"]}'
+  - name: build-source-image
+    value: "true"
   pipelineSpec:
     finally:
     - name: show-sbom
