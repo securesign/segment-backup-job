@@ -7,10 +7,10 @@ metadata:
     build.appstudio.redhat.com/target_branch: '{{target_branch}}'
     pipelinesascode.tekton.dev/max-keep-runs: "3"
     pipelinesascode.tekton.dev/on-cel-expression: event == "push" && target_branch
-      == "master"
+      == "main"
   creationTimestamp: null
   labels:
-    appstudio.openshift.io/application: rhtas-stack-1-0-beta
+    appstudio.openshift.io/application: segment-backup-job
     appstudio.openshift.io/component: segment-backup-job
     pipelines.appstudio.openshift.io/type: build
   name: segment-backup-job-on-push
@@ -18,11 +18,11 @@ metadata:
 spec:
   params:
   - name: dockerfile
-    value: Containerfile
+    value: Containerfile.segment-backup-job.rh
   - name: git-url
     value: '{{repo_url}}'
   - name: output-image
-    value: quay.io/redhat-user-workloads/rhtas-tenant/rhtas-stack-1-0-beta/segment-backup-job:{{revision}}
+    value: quay.io/redhat-user-workloads/rhtas-tenant/segment-backup-job/segment-backup-job:{{revision}}
   - name: path-context
     value: .
   - name: revision
