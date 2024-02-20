@@ -14,7 +14,6 @@ LABEL io.openshift.tags="segment,segment-collection"
 LABEL summary="Provides the segment data collection service"
 LABEL com.redhat.component="segment-collection"
 
-
 USER 0
 
 WORKDIR /opt/app-root/src/
