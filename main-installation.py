@@ -13,6 +13,14 @@ def on_error(error, items):
 analytics.write_key = 'jwq6QffjZextbffljhUjL5ODBcrIvsi5'
 
 
+integrations={
+  'cdnURL': 'console.redhat.com/connections/cdn',
+  'Segment.io': {
+    'apiHost': 'console.redhat.com/connections/api/v1',
+    'protocol': 'https'
+  }
+}
+
 user={}
 data={}
 
@@ -36,7 +44,8 @@ with open('./tmp', 'r') as file:
       },
       {
         'groupId': user["org_id"],
-      }
+      },
+      integrations=integrations
     )
     analytics.flush()
 
