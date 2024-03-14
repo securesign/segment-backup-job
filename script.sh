@@ -7,24 +7,18 @@ max_attempts=60
 sleep_interval=5
 
 check_telemetry_enabled() {
-  openshift_pullsecret_exists=$(oc get secret pull-secret -n openshift-config --ignore-not-found=true)
-  if [[ -n $openshift_pullsecret_exists ]]; then
-    cloud_dot_openshift_cluster=$(oc get secret pull-secret -n openshift-config -o json | jq -r '.data.".dockerconfigjson"' | base64 -d | jq -r '.auths."cloud.openshift.com"')
-    if [[ -n $cloud_dot_openshift_cluster ]]; then
-      echo "This cluster has \`cloud.openshift.com\` pullsecret credentials, and is thus deemed a CI cluster. Exiting, analytics not meant for CI clusters"
-      exit 1
-    fi
-  fi
+  # openshift_pullsecret_exists=$(oc get secret pull-secret -n openshift-config --ignore-not-found=true)
+  # if [[ -n $openshift_pullsecret_exists ]]; then
+  #   cloud_dot_openshift_cluster=$(oc get secret pull-secret -n openshift-config -o json | jq -r '.data.".dockerconfigjson"' | base64 -d | jq -r '.auths."cloud.openshift.com"')
+  #   if [[ -n $cloud_dot_openshift_cluster ]]; then
+  #     echo "This cluster has \`cloud.openshift.com\` pullsecret credentials, and is thus deemed a CI cluster. Exiting, analytics not meant for CI clusters"
+  #     exit 1
+  #   fi
+  # fi
   cluster_monitoring_config_exists=$(oc get configmap cluster-monitoring-config -n openshift-monitoring --ignore-not-found=true)
   if [[ -n $cluster_monitoring_config_exists ]]; then
     cluster_monitoring_configs=$(oc get configmap cluster-monitoring-config -n openshift-monitoring -o json | jq '.data."config.yaml"' | cut -d "\"" -f 2)
-    if [[ -n $cluster_monitoring_configs ]]; then
-      telemetry_disabled=$(echo $cluster_monitoring_configs | yq .telemeterClient.enabled)
-      if [[ $telemetry_disabled == "False" || $telemetry_disabled == "false" ]]; then
-        echo "Telemetry has been explicitly disabled on this cluster. Cancelling job."
-        exit 1
-      fi
-    fi
+    echo $cluster_monitoring_configs > ./cluster-monitoring-config.yaml
   fi
   openshift_console_operator=$(oc get console.operator.openshift.io cluster -o json --ignore-not-found=true)
   if [[ -n $openshift_console_operator ]]; then
@@ -82,7 +76,7 @@ if [[ $? == 1 ]]; then
   echo $telemetry_disabled_message
   exit 1
 fi
-
+exit 0
 check_pull_secret
 check_thanos_querier_status
 
