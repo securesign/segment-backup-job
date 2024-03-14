@@ -30,6 +30,12 @@ spec:
     value: .
   - name: revision
     value: '{{revision}}'
+  - name: hermetic
+    value: "true"
+  - name: build-source-image
+    value: "true"
+  - name: prefetch-input
+    value: '{"path": ".", "type": "pip", "requirements_build_files": ["requirements-build.txt", "requirements.txt"]}'
   pipelineSpec:
     finally:
     - name: show-sbom
