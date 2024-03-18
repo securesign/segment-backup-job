@@ -17,14 +17,8 @@ data = json.load(f)
     # analytics.debug = True
 analytics.on_error = on_error
 analytics.track(
-    data["user_id"], 
+    data["cluster"], 
     'New Install', 
-    {
-        'cluster': data["cluster"]
-    },
-    {
-        'groupId': data["org_id"],
-    }
 )
 analytics.flush()
 

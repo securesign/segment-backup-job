@@ -15,24 +15,18 @@ tmp_file_path="./tmp.json"
 
 
 check_telemetry_enabled() {
-  openshift_pullsecret_exists=$(oc get secret pull-secret -n openshift-config --ignore-not-found=true)
-  if [[ -n $openshift_pullsecret_exists ]]; then
-    cloud_dot_openshift_cluster=$(oc get secret pull-secret -n openshift-config -o json | jq -r '.data.".dockerconfigjson"' | base64 -d | jq -r '.auths."cloud.openshift.com"')
-    if [[ -n $cloud_dot_openshift_cluster ]]; then
-      echo "This cluster has \`cloud.openshift.com\` pullsecret credentials, and is thus deemed a CI cluster. Exiting, analytics not meant for CI clusters"
-      exit 1
-    fi
-  fi
+  # openshift_pullsecret_exists=$(oc get secret pull-secret -n openshift-config --ignore-not-found=true)
+  # if [[ -n $openshift_pullsecret_exists ]]; then
+  #   cloud_dot_openshift_cluster=$(oc get secret pull-secret -n openshift-config -o json | jq -r '.data.".dockerconfigjson"' | base64 -d | jq -r '.auths."cloud.openshift.com"')
+  #   if [[ -n $cloud_dot_openshift_cluster ]]; then
+  #     echo "This cluster has \`cloud.openshift.com\` pullsecret credentials, and is thus deemed a CI cluster. Exiting, analytics not meant for CI clusters"
+  #     exit 1
+  #   fi
+  # fi
   cluster_monitoring_config_exists=$(oc get configmap cluster-monitoring-config -n openshift-monitoring --ignore-not-found=true)
   if [[ -n $cluster_monitoring_config_exists ]]; then
     cluster_monitoring_configs=$(oc get configmap cluster-monitoring-config -n openshift-monitoring -o json | jq '.data."config.yaml"' | cut -d "\"" -f 2)
-    if [[ -n $cluster_monitoring_configs ]]; then
-      telemetry_disabled=$(echo $cluster_monitoring_configs | yq .telemeterClient.enabled)
-      if [[ $telemetry_disabled == "False" || $telemetry_disabled == "false" ]]; then
-        echo "Telemetry has been explicitly disabled on this cluster. Cancelling job."
-        exit 1
-      fi
-    fi
+    echo $cluster_monitoring_configs > ./config.yaml
   fi
   openshift_console_operator=$(oc get console.operator.openshift.io cluster -o json --ignore-not-found=true)
   if [[ -n $openshift_console_operator ]]; then
@@ -83,57 +77,19 @@ check_user_workload_monitoring_enabled() {
   exit 0
 }
 
-check_pull_secret_exists() {
-  local attempts=0
-
-  while [[ $attempts -lt $max_attempts ]]; do
-    pull_secret_exists=$(oc get secret pull-secret -n trusted-artifact-signer-monitoring --ignore-not-found=true)
-    if [[ -n $pull_secret_exists ]]; then
-      echo "secret \"pull-secret\" in namespace \"trusted-artifact-signer-monitoring\" exists, proceeding."
-      return 0
-    else
-      echo "Waiting for secret \"pull-secret\" in namespace \"trusted-artifact-signer-monitoring\" to exist..."
-      sleep $sleep_interval
-      attempts=$((attempts + 1))
-    fi
-  done
-
-  echo "Timed out. Cannot find secret \"pull-secret\" in namespace \"trusted-artifact-signer-monitoring\"."
-  echo "Please download the pull-secret from \`https://console.redhat.com/application-services/trusted-content/artifact-signer\`
-  and create a secret from it: \`oc create secret generic pull-secret -n trusted-artifact-signer-monitoring --from-file=\$HOME/Downloads/pull-secret.json\`."
-  return 1
-}
-
-<<<<<<< HEAD
 telemetry_disabled_message=$(check_telemetry_enabled)
 if [[ $? == 1 ]]; then
   echo $telemetry_disabled_message
   exit 1
 fi
 
-check_pull_secret
-check_thanos_querier_status
-
-pull_secret_exists=$(oc get secret  pull-secret -n sigstore-monitoring --ignore-not-found=true)
-=======
-check_pull_secret_data() {
-  pull_secret=$(oc get secret pull-secret -n trusted-artifact-signer-monitoring --ignore-not-found=true -o json)
-  if [[ -n $pull_secret ]]; then
-    pull_secret_userID=$(echo $pull_secret | jq '.data."pull-secret.json"')
-    if [[ $pull_secret_userID == "null" ]]; then
-      echo "error parsing secret \"pull-secret\" in namespace \"trusted-artifact-signer-monitoring\"": did not have property \`.data.pull-secret.json\`.
-      exit 1
-    fi
-    exit 0
-  else
-    echo "No TAS pull-secret found. If you would like to send metrics or recieve support support,
-      please download the pull-secret from \`https://console.redhat.com/application-services/trusted-content/artifact-signer\`.
-      Then create the secret \"pull-secret\" in namespace \"trusted-artifact-signer-monitoring\" from the value:  \`oc create secret generic pull-secret -n trusted-artifact-signer-monitoring --from-file=\$HOME/Downloads/pull-secret.json\`
-      "
-    exit 1
+jq_update_file() {
+  if [[ $? != 0 ]]; then
+    echo "jq could not parse file" 
+    exit $?
   fi
+  mv $1 $2
 }
->>>>>>> d6ec969 (safe fail for default pull-secret)
 
 parse_string_into_array_of_objects() {
   for var in "$@"
@@ -154,17 +110,8 @@ parse_string_into_array_of_objects() {
   done
 }
  
-jq_update_file() {
-  if [[ $? != 0 ]]; then
-    echo "jq could not parse file" 
-    exit $?
-  fi
-  mv $1 $2
-}
+check_thanos_querier_status
 
-
-pse=$(check_pull_secret_exists)
-psd=$(check_pull_secret_data)
 console_route=$(oc get route console -n openshift-console --ignore-not-found | grep "console-openshift-console" | awk '{print $2}')
 base_domain=""
 echo $console_route
@@ -175,21 +122,10 @@ else
   base_domain=${console_route:31:((${#console_route}-31))}
 fi
 
-if [[ "$pse" == "1" || "$psd" == "1" ]]; then
-  org_id="41414141"
-  user_id="41414141"
-else 
-  secret_data=$(oc get secret pull-secret -n trusted-artifact-signer-monitoring -o "jsonpath={.data.pull-secret\.json}")
-  org_id=$(echo $secret_data | base64 -d | jq ".orgId" | cut -d "\"" -f 2 )
-  user_id=$(echo $secret_data | base64 -d  | jq ".userId" | cut -d "\"" -f 2 )
-fi
-
 # Create file with user and org data so it exists
 echo $base_domain
 
-jq -n '{"org_id": $ARGS.named["org_id"],"user_id": $ARGS.named["user_id"], "base_domain": $ARGS.named["base_domain"]}' \
-  --arg org_id $org_id \
-  --arg user_id $user_id \
+jq -n '{"base_domain": $ARGS.named["base_domain"]}' \
   --arg base_domain $base_domain \
   $ingestion_file_path > $tmp_file_path
   jq_update_file $tmp_file_path $ingestion_file_path

@@ -16,7 +16,6 @@ data = json.load(f)
 
 
 body_dict={
-    'cluster': data["cluster"],
     'fulcio_new_certs': data["fulcio_new_certs"],
     'rekor_new_entries': data["rekor_new_entries"],
     'rekor_qps_by_api': data["rekor_qps_by_api"],
@@ -24,12 +23,9 @@ body_dict={
     # analytics.debug = True
 analytics.on_error = on_error       
 analytics.track(
-    data["user_id"], 
+    data["cluster"], 
     'Nightly Usage Metrics', 
     body_dict,
-    {
-        'groupId': data["org_id"],
-    }
 )
 analytics.flush()
 
