@@ -4,6 +4,9 @@ import logging
 import json
 import yaml
 
+def on_error(error, items):
+    print("An error occurred:", error)
+
 def check_cluster_monitoring_config():
     with open("config.yaml") as stream:
         try:
@@ -12,16 +15,16 @@ def check_cluster_monitoring_config():
                 if 'enabled' in config['telemeterClient']:
                     if config['telemeterClient']['enabled'] == "False" or config['telemeterClient']['enabled'] == "false":
                         return 1
+                if 'disabled' in config['telemeterClient']:
+                    if config['telemeterClient']['disabled'] == "True" or config['telemeterClient']['disabled'] == "true":
+                        return 1
         except yaml.YAMLError as exc:
             print(exc)
     return 0
 
 if check_cluster_monitoring_config() == 1:
     print("TelemeterClient have been disabled via the cluster-monitoring-config")
-    return
-
-def on_error(error, items):
-    print("An error occurred:", error)
+    exit(1)
 
 logging.getLogger('segment').setLevel('DEBUG')
 
