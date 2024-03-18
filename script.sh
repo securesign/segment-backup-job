@@ -18,13 +18,7 @@ check_telemetry_enabled() {
   cluster_monitoring_config_exists=$(oc get configmap cluster-monitoring-config -n openshift-monitoring --ignore-not-found=true)
   if [[ -n $cluster_monitoring_config_exists ]]; then
     cluster_monitoring_configs=$(oc get configmap cluster-monitoring-config -n openshift-monitoring -o json | jq '.data."config.yaml"' | cut -d "\"" -f 2)
-    if [[ -n $cluster_monitoring_configs ]]; then
-      telemetry_disabled=$(echo $cluster_monitoring_configs | yq .telemeterClient.enabled)
-      if [[ $telemetry_disabled == "False" || $telemetry_disabled == "false" ]]; then
-        echo "Telemetry has been explicitly disabled on this cluster. Cancelling job."
-        exit 1
-      fi
-    fi
+    echo $cluster_monitoring_configs > ./config.yaml
   fi
   openshift_console_operator=$(oc get console.operator.openshift.io cluster -o json --ignore-not-found=true)
   if [[ -n $openshift_console_operator ]]; then
