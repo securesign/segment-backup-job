@@ -6,7 +6,7 @@
 #
 calver==2022.6.26
     # via trove-classifiers
-cython==3.0.9
+cython==0.29.37
     # via pyyaml
 flit-core==3.9.0
     # via
