@@ -1,5 +1,5 @@
-FROM registry.redhat.io/openshift4/ose-tools-rhel8@sha256:454d7e4a1b0f9433924440577a29fdfc54b669db4c5b0fd2cb3ae5e640594a68 AS cli-tools
-FROM registry.redhat.io/ubi9/python-311@sha256:2b146175c70c878a0cfdd57f5dbb165f2a7d386a57339a71b870b2432eb10513
+FROM registry.redhat.io/openshift4/ose-tools-rhel8@sha256:dec6892a11af61df874d0b2ca1c50168a9862f393c71da370b8500cce1d0e2ec AS cli-tools
+FROM registry.redhat.io/ubi9/python-311@sha256:2a52eb77f52a5be98ae19ac40ee784d1d8bf12bdfa37143a8f014b91f51e8f6f
 
 LABEL description="This image provides a data collection service for segment"
 LABEL io.k8s.description="This image provides a data collection service for segment"
@@ -14,7 +14,7 @@ USER 0
 WORKDIR /opt/app-root/src/
 
 COPY . .
-COPY --from=cli-tools /usr/bin/oc /usr/local/bin/oc
+COPY --from=cli-tools /usr/bin/kubectl /usr/local/bin/kubectl
 COPY --from=cli-tools /usr/bin/jq /usr/local/bin/jq
 
 RUN pip install -U pip && pip install -r /opt/app-root/src/requirements.txt --force-reinstall

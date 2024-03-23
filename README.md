@@ -6,7 +6,7 @@ This is the script I used to automate my builds (OSX only but i guess some linux
 
 ```bash
 # If https://github.com/securesign/sigstore-ocp/pull/81/files is not merged you will need to create the pull secret, go here: https://console.redhat.com/application-services/trusted-content/artifact-signer and download it
-oc create secret generic pull-secret -n sigstore-monitoring --from-file=$HOME/Downloads/pull-secret.json
+kubectl create secret generic pull-secret -n sigstore-monitoring --from-file=$HOME/Downloads/pull-secret.json
 
 # was developing and pushing images here to test: https://quay.io/repository/grpereir/segment-backup-job?tab=tags, get the latest tag and set version to be 1 after that
 
@@ -29,7 +29,7 @@ podman run -it --rm quay.io/grpereir/segment-backup-job:1.0.$version /bin/bash
 
 code $sigstore_ocp_path/charts/trusted-artifact-signer/values.yaml # replace lines 17 and possibly 16
 /usr/bin/open -a "/Applications/Google Chrome.app" 'https://quay.io/repository/grpereir/segment-backup-job?tab=tags' #automated for mac but do this based on your OS
-oc delete cronjob segment-backup-job -n sigstore-monitoring; oc delete job segment-backup-job -n sigstore-monitoring #if you have issues with permssions here run this as non-service account oc user
+kubectl delete cronjob segment-backup-job -n sigstore-monitoring; kubectl delete job segment-backup-job -n sigstore-monitoring #if you have issues with permssions here run this as non-service account kubectl user
 $segment_backup_job_repo_path/tas-easy-install.sh
 
 ```
@@ -42,24 +42,24 @@ From host logged in:
 ```bash
 
 
-export secret_name_for_sa=$( oc get sa segment-backup-job -n sigstore-monitoring -o json | jq ".secrets[1].name" | cut -d "\"" -f 2 )
+export secret_name_for_sa=$( kubectl get sa segment-backup-job -n sigstore-monitoring -o json | jq ".secrets[1].name" | cut -d "\"" -f 2 )
 
-export sa_token=$(oc get secret $secret_name_for_sa -n sigstore-monitoring -o json | jq .metadata.annotations."\"openshift.io/token-secret.value\"" | cut -d "\"" -f 2)
-export server=$(oc whoami -t)
-echo "oc login --token=$sa_token --server=$server" # spits out the login command for the SA, used in terminal 2
+export sa_token=$(kubectl get secret $secret_name_for_sa -n sigstore-monitoring -o json | jq .metadata.annotations."\"openshift.io/token-secret.value\"" | cut -d "\"" -f 2)
+export server=$(kubectl whoami -t)
+echo "kubectl login --token=$sa_token --server=$server" # spits out the login command for the SA, used in terminal 2
 
 ```
 
 INSIDE the container:
 ```bash
-# use the above login command, ex: oc login --token=... --server=...
+# use the above login command, ex: kubectl login --token=... --server=...
 
 #Choose a run type to test (installation or nightly)
 export RUN_TYPE="installation" 
 export RUN_TYPE="nightly"
 
 #Verify you are the service account
-oc whoami
+kubectl whoami
 
 #Run script as entrypoint
 /opt/app-root/src/script.sh
