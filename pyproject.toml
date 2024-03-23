@@ -4,5 +4,5 @@ name = "SegmentBackupJob"
 version = "1.0"
 dependencies = [
     'segment-analytics-python==2.2.3',
-    'PyYAML==6.0'
+    'PyYAML==6.0.1'
 ]
