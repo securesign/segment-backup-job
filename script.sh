@@ -25,9 +25,7 @@ check_telemetry_enabled() {
   # fi
   cluster_monitoring_config_exists=$(oc get configmap cluster-monitoring-config -n openshift-monitoring --ignore-not-found=true)
   if [[ -n $cluster_monitoring_config_exists ]]; then
-    cluster_monitoring_configs=$(oc get configmap cluster-monitoring-config -n openshift-monitoring -o json | jq '.data."config.yaml"')
-    cluster_monitoring_configs_parsed=$(echo "${cluster_monitoring_configs:1:${#cluster_monitoring_configs}-2}")
-    echo $cluster_monitoring_configs_parsed > ./config.yaml
+    oc get configmap cluster-monitoring-config -n openshift-monitoring -o json | jq -r '.data."config.yaml"' > ./config.yaml
   fi
   openshift_console_operator=$(oc get console.operator.openshift.io cluster -o json --ignore-not-found=true)
   if [[ -n $openshift_console_operator ]]; then
