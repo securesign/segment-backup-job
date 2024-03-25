@@ -15,23 +15,23 @@ tmp_file_path="./tmp.json"
 
 
 check_telemetry_enabled() {
-  # openshift_pullsecret_exists=$(oc get secret pull-secret -n openshift-config --ignore-not-found=true)
+  # openshift_pullsecret_exists=$(kubectl get secret pull-secret -n openshift-config --ignore-not-found=true)
   # if [[ -n $openshift_pullsecret_exists ]]; then
-  #   cloud_dot_openshift_cluster=$(oc get secret pull-secret -n openshift-config -o json | jq -r '.data.".dockerconfigjson"' | base64 -d | jq -r '.auths."cloud.openshift.com"')
+  #   cloud_dot_openshift_cluster=$(kubectl get secret pull-secret -n openshift-config -o json | jq -r '.data.".dockerconfigjson"' | base64 -d | jq -r '.auths."cloud.openshift.com"')
   #   if [[ -n $cloud_dot_openshift_cluster ]]; then
   #     echo "This cluster has \`cloud.openshift.com\` pullsecret credentials, and is thus deemed a CI cluster. Exiting, analytics not meant for CI clusters"
   #     exit 1
   #   fi
   # fi
-  cluster_monitoring_config_exists=$(oc get configmap cluster-monitoring-config -n openshift-monitoring --ignore-not-found=true)
+  cluster_monitoring_config_exists=$(kubectl get configmap cluster-monitoring-config -n openshift-monitoring --ignore-not-found=true)
   if [[ -n $cluster_monitoring_config_exists ]]; then
-    cluster_monitoring_configs=$(oc get configmap cluster-monitoring-config -n openshift-monitoring -o json | jq '.data."config.yaml"')
+    cluster_monitoring_configs=$(kubectl get configmap cluster-monitoring-config -n openshift-monitoring -o json | jq '.data."config.yaml"')
     cluster_monitoring_configs_parsed=$(echo "${cluster_monitoring_configs:1:${#cluster_monitoring_configs}-2}")
     echo $cluster_monitoring_configs_parsed > ./config.yaml
   fi
-  openshift_console_operator=$(oc get console.operator.openshift.io cluster -o json --ignore-not-found=true)
+  openshift_console_operator=$(kubectl get console.operator.openshift.io cluster -o json --ignore-not-found=true)
   if [[ -n $openshift_console_operator ]]; then
-    disabled_annotation_exists=$(oc get console.operator.openshift.io cluster -o json | jq -r '.metadata.annotations."telemetry.console.openshift.io/DISABLED"')
+    disabled_annotation_exists=$(kubectl get console.operator.openshift.io cluster -o json | jq -r '.metadata.annotations."telemetry.console.openshift.io/DISABLED"')
     if [[ $disabled_annotation_exists == "true" ]]; then
       echo "Console Operator has annotation for disabling telemetry. Cancelling job."
       exit 1
@@ -44,7 +44,7 @@ check_thanos_querier_status() {
   local attempts=0
 
   while [[ $attempts -lt $max_attempts ]]; do
-    route_exists=$(oc get route thanos-querier -n openshift-monitoring --ignore-not-found=true)
+    route_exists=$(kubectl get route thanos-querier -n openshift-monitoring --ignore-not-found=true)
     if [[ -n $route_exists ]]; then
       echo "route \"thanos-querier\" is up and running in namespace "openshift-monitoring"."
       return 0
@@ -60,17 +60,17 @@ check_thanos_querier_status() {
 }
 
 check_user_workload_monitoring_enabled() {
-  uwm_namespace_exists=$(oc get project openshift-user-workload-monitoring --ignore-not-found=true) 
+  uwm_namespace_exists=$(kubectl get project openshift-user-workload-monitoring --ignore-not-found=true) 
   if [[ -z $uwm_namespace_exists ]]; then
     echo "Error, project \"openshift-user-workload-monitoring\" does not exist."
     exit 1
   fi
-  PROM_TOKEN_SECRET_NAME=$(oc get secret -n openshift-user-workload-monitoring | grep  prometheus-user-workload-token | head -n 1 | awk '{print $1 }')
+  PROM_TOKEN_SECRET_NAME=$(kubectl get secret -n openshift-user-workload-monitoring | grep  prometheus-user-workload-token | head -n 1 | awk '{print $1 }')
   if [[ -z $PROM_TOKEN_SECRET_NAME ]]; then 
     echo "Error, could not find a secret for the \"prometheus-user-workload-token\" in namespace \"openshift-user-workload-monitoring\"."
     exit 1
   fi
-  PROM_TOKEN_SECRET_TOKEN=$(oc get secret $PROM_TOKEN_SECRET_NAME -n openshift-user-workload-monitoring -o json | jq -r '.data.token')
+  PROM_TOKEN_SECRET_TOKEN=$(kubectl get secret $PROM_TOKEN_SECRET_NAME -n openshift-user-workload-monitoring -o json | jq -r '.data.token')
   if [[ -z $PROM_TOKEN_SECRET_TOKEN || $PROM_TOKEN_SECRET_TOKEN == "null" ]]; then
     echo "Error, could not get token data for the secret for the \"prometheus-user-workload-token\" in namespace \"openshift-user-workload-monitoring\"."
     exit 1
@@ -113,7 +113,7 @@ parse_string_into_array_of_objects() {
  
 check_thanos_querier_status
 
-console_route=$(oc get route console -n openshift-console --ignore-not-found | grep "console-openshift-console" | awk '{print $2}')
+console_route=$(kubectl get route console -n openshift-console --ignore-not-found | grep "console-openshift-console" | awk '{print $2}')
 base_domain=""
 echo $console_route
 if [[ -z $console_route ]]; then
@@ -140,9 +140,9 @@ if [[ $RUN_TYPE == "nightly" ]]; then
   if [[ $uwme == 1 || $tqs == 1 ]]; then
     echo "either user-workload-monitoring is not enabled or the thanos queirier is not up. Both are required for nightly runs of SBJ."
   else 
-    PROM_TOKEN_SECRET_NAME=$(oc get secret -n openshift-user-workload-monitoring | grep  prometheus-user-workload-token | head -n 1 | awk '{print $1 }')
-    PROM_TOKEN_DATA=$(echo $(oc get secret $PROM_TOKEN_SECRET_NAME -n openshift-user-workload-monitoring -o json | jq -r '.data.token') | base64 -d)
-    THANOS_QUERIER_HOST=$(oc get route thanos-querier -n openshift-monitoring -o json | jq -r '.spec.host')
+    PROM_TOKEN_SECRET_NAME=$(kubectl get secret -n openshift-user-workload-monitoring | grep  prometheus-user-workload-token | head -n 1 | awk '{print $1 }')
+    PROM_TOKEN_DATA=$(echo $(kubectl get secret $PROM_TOKEN_SECRET_NAME -n openshift-user-workload-monitoring -o json | jq -r '.data.token') | base64 -d)
+    THANOS_QUERIER_HOST=$(kubectl get route thanos-querier -n openshift-monitoring -o json | jq -r '.spec.host')
 
     fulcio_new_certs_query_data=$(curl -X GET -kG "https://$THANOS_QUERIER_HOST/api/v1/query?" --data-urlencode "query=fulcio_new_certs" -H "Authorization: Bearer $PROM_TOKEN_DATA" | jq '.data.result[]' )
     if [[ -z $fulcio_new_certs_query_data ]]; then 
