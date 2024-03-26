@@ -168,13 +168,13 @@ def query_nightly_metrics(openshift_client, thanos_quierier_host, prom_token, ba
     rekor_qps_by_api_query_URL='https://{thanos_quierier_host}/api/v1/query?&{rekor_qps_by_api_query_data}'.format(thanos_quierier_host=thanos_quierier_host, rekor_qps_by_api_query_data=rekor_qps_by_api_query_data)
     headers = {'Authorization': 'Bearer {prom_token}'.format(prom_token=prom_token)}
 
-    fulcio_new_certs_response_data = requests.get(fulcio_new_certs_query_URL, headers=headers, verify=False,)
+    fulcio_new_certs_response_data = requests.get(fulcio_new_certs_query_URL, headers=headers, verify=True,)
     if fulcio_new_certs_response_data.status_code == 200 or fulcio_new_certs_response_data.status_code == 201:
         fulcio_new_certs_json = fulcio_new_certs_response_data.json()
         if fulcio_new_certs_json['status'] == 'success' and  fulcio_new_certs_json['data']['result']:
             fulcio_new_certs = fulcio_new_certs_json['data']['result'][0]['value'][1]
 
-    rekor_new_entries_response_data = requests.get(rekor_new_entries_query_URL,headers=headers, verify=False,)
+    rekor_new_entries_response_data = requests.get(rekor_new_entries_query_URL,headers=headers, verify=True,)
     if rekor_new_entries_response_data.status_code == 200 or rekor_new_entries_response_data.status_code == 201:
         rekor_new_entries_json = rekor_new_entries_response_data.json()
         if rekor_new_entries_json['status'] == 'success' and rekor_new_entries_json['data']['result']:
@@ -184,7 +184,7 @@ def query_nightly_metrics(openshift_client, thanos_quierier_host, prom_token, ba
                 rekor_new_entries = rekor_new_entries_json['data']['result'][0]['value'][1]
 
 
-    rekor_qps_by_api_response_data = requests.get(rekor_qps_by_api_query_URL,headers=headers, verify=False,)
+    rekor_qps_by_api_response_data = requests.get(rekor_qps_by_api_query_URL,headers=headers, verify=True,)
     if rekor_qps_by_api_response_data.status_code == 200 or rekor_qps_by_api_response_data.status_code == 201:
         rekor_qps_by_api_json = rekor_qps_by_api_response_data.json()
         if rekor_qps_by_api_json['status'] == 'success' and rekor_qps_by_api_json['data']['result']:
