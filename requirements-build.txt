@@ -85,7 +85,7 @@ poetry-core==1.9.0 \
     # via
     #   backoff
     #   rsa
-setuptools-scm @ https://files.pythonhosted.org/packages/1d/66/8f42c941be949ef2b22fe905d850c794e7c170a526023612aad5f3a121ad/setuptools_scm-7.1.0-py3-none-any.whl#sha256=6c508345a771aad7d56ebff0e70628bf2b0ec7573762be9960214730de278f27 \
+setuptools-scm @ https://files.pythonhosted.org/packages/1d/66/8f42c941be949ef2b22fe905d850c794e7c170a526023612aad5f3a121ad/setuptools_scm-7.1.0-py3-none-any.tgz#sha256=6c508345a771aad7d56ebff0e70628bf2b0ec7573762be9960214730de278f27 \
     --hash=sha256:6c508345a771aad7d56ebff0e70628bf2b0ec7573762be9960214730de278f27
     # via
     #   pluggy
