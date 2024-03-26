@@ -7,5 +7,4 @@ dependencies = [
     'kubernetes==29.0.0',
     'pyYAML==6.0.1',
     'openshift==0.13.2'
-    'setuptools_scm==8.0.4'
 ]

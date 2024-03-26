@@ -15,6 +15,5 @@ WORKDIR /opt/app-root/src/
 COPY . .
 
 RUN pip install -U pip 
-RUN pip install -r /opt/app-root/src/requirements-build.txt --force-reinstall
-RUN pip install -r /opt/app-root/src/requirements.txt --force-reinstall
+RUN pip install -r /opt/app-root/src/requirements.txt --force-reinstall --no-build-isolation
 USER 1001
