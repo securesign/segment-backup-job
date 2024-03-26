@@ -14,6 +14,6 @@ WORKDIR /opt/app-root/src/
 
 COPY . .
 
-RUN pip install -U pip && pip install -r /opt/app-root/src/requirements.txt --force-reinstall
+RUN pip install -U pip && pip install setuptools-scm &&pip install -r /opt/app-root/src/requirements.txt --force-reinstall
 
 USER 1001
