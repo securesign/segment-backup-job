@@ -58,7 +58,7 @@ def check_console_operator(openshift_client):
                 return 1
         return 0
     except:
-        print('could not get Console named cluster in namespace \`openshift-conole\`, and thus it cannot have the disabled annotation. Continuing ...')
+        print('could not get Console named cluster in namespace \`openshift-console\`, and thus it cannot have the disabled annotation. Continuing ...')
         return 0
         
 def check_thanos_querier_status(openshift_client):
@@ -229,11 +229,11 @@ def main():
     check_cluster_monitoring_config_status = check_cluster_monitoring_config(openshift_client)
     if check_cluster_monitoring_config_status == 1:
         print('gracefully terminating, telemetry explicitly disabled in cluster_monitoring_config')
-        exit(1)
+        exit(0)
     check_console_operator_status = check_console_operator(openshift_client)   
     if check_console_operator_status == 1:
         print('gracefully terminating, telemetry explicitly disabled as an annotation to the Console operator')
-        exit(1)
+        exit(0)
     RUN_TYPE = os.environ.get('RUN_TYPE')
     if RUN_TYPE is not None:
         print('running in mode: ', RUN_TYPE)
