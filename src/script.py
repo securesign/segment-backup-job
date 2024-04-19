@@ -58,7 +58,7 @@ def check_console_operator(openshift_client):
                 return 1
         return 0
     except:
-        print('could not get Console named cluster in namespace \`openshift-conole\`, and thus it cannot have the disabled annotation. Continuing ...')
+        print('could not get Console named cluster in namespace \`openshift-console\`, and thus it cannot have the disabled annotation. Continuing ...')
         return 0
         
 def check_thanos_querier_status(openshift_client):
@@ -86,7 +86,7 @@ def check_thanos_querier_status(openshift_client):
         print('Timed out. Thanos Querier route did not spin up in the \`openshift-monitoring\` namespace.')
         return 1
 
-def enable_user_workload_monitoring_if_does_not_exist(openshift_client):
+def check_user_workload_monitoring(openshift_client):
     v1_configmaps = openshift_client.resources.get(api_version='v1', kind='ConfigMap')
     try:
         cluster_monitoring_configmap = v1_configmaps.get(name='cluster-monitoring-config', namespace='openshift-monitoring')
@@ -96,25 +96,8 @@ def enable_user_workload_monitoring_if_does_not_exist(openshift_client):
                 config = yaml.safe_load(config_data)
                 check_value = config.get('enableUserWorkload')
                 if check_value is None or check_value == 'false' or check_value == 'False' or check_value == False:
-                    config['enableUserWorkload'] = True
-                    print(config)
-                    body = {
-                        'kind': 'ConfigMap',
-                        'apiVersion': 'v1',
-                        'metadata': {
-                            'name': 'cluster-monitoring-config',
-                            'namespace': 'openshift-monitoring'
-                        },
-                        'data': {
-                            'config.yaml': json.dumps(config)
-                        }
-                    }
-                    try:
-                        v1_configmaps.patch(body=body, namespace='openshift-monitoring')
-                        time.sleep(30)
-                    except:
-                        print('failed to patch configmap \`cluster-monitoring-config` in namespace \`openshift-monitoring\` to enable userWorkloadMonitoring')
-                        return 1
+                    print('userWorkloadMonitoring is disabled....failing job')
+                    return 1
         return 0
     except:
         print('Could not get ConfigMap \`cluster-monitoring-config\` in namespace \`openshift-monitoring\`, meaning userWorkloadMonitoring is not enabled or there are permissions errors.')
@@ -229,21 +212,21 @@ def main():
     check_cluster_monitoring_config_status = check_cluster_monitoring_config(openshift_client)
     if check_cluster_monitoring_config_status == 1:
         print('gracefully terminating, telemetry explicitly disabled in cluster_monitoring_config')
-        exit(1)
+        exit(0)
     check_console_operator_status = check_console_operator(openshift_client)   
     if check_console_operator_status == 1:
         print('gracefully terminating, telemetry explicitly disabled as an annotation to the Console operator')
-        exit(1)
+        exit(0)
     RUN_TYPE = os.environ.get('RUN_TYPE')
     if RUN_TYPE is not None:
         print('running in mode: ', RUN_TYPE)
     else:
         print('RUN_TYPE has not be set, job will fail.')
         exit(1)
-    user_workload_monitoring_status = enable_user_workload_monitoring_if_does_not_exist(openshift_client)
+    user_workload_monitoring_status = check_user_workload_monitoring(openshift_client)
     if user_workload_monitoring_status == 1 and RUN_TYPE == "nightly":
         print('userWorkloadMonitoring is a requirement for nightly metrics. Failing job.')
-        exit(1)
+        exit(0)
     thanos_quierier_host = check_thanos_querier_status(openshift_client)
     if thanos_quierier_host == 1 and RUN_TYPE == 'nightly':
         print('thanos-querier is not up and is a dependency of nightly metrics. Failing job.')
