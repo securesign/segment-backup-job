@@ -102,30 +102,16 @@ def check_user_workload_monitoring(openshift_client):
     except:
         print('Could not get ConfigMap \`cluster-monitoring-config\` in namespace \`openshift-monitoring\`, meaning userWorkloadMonitoring is not enabled or there are permissions errors.')
         return 1
-
-def get_prom_token(openshift_client):
-    v1_secrets = openshift_client.resources.get(api_version='v1', kind='Secret')
+    
+def get_bearer_token():
     try:
-        uwm_ns_secrets = v1_secrets.get(namespace='openshift-user-workload-monitoring')
-        prom_uwm_secret_name=''
-        prom_uwm_token=''
-        for secret in uwm_ns_secrets.items:
-            if 'prometheus-user-workload-token-' in secret.metadata.name:
-                prom_uwm_secret_name = secret.metadata.name
-        if prom_uwm_secret_name != '':
-            try:
-                prom_uwm_secret = v1_secrets.get(namespace='openshift-user-workload-monitoring', name=prom_uwm_secret_name)
-                prom_uwm_token = prom_uwm_secret.data.token
-                prom_uwm_token = base64.b64decode(prom_uwm_token).decode('utf-8')
-                return prom_uwm_token
-            except:
-                print('Error getting secret: ', prom_uwm_secret_name, ' in ns: \`openshift-user-workload-monitoring\`.')
-                return 1
-        else:
-            print('could not get prometheus-user-workload-token')
-            return 1
+        token_file = open('/var/run/secrets/kubernetes.io/serviceaccount/token', 'r')
+        bearer_token = token_file.read().strip()
+        token_file.close()
     except:
-        print('Error listing secrets from ns \`openshift-user-workload-monitoring\`')
+        print("Could not read the bearer token.")
+        return 1
+    return bearer_token
 
 def get_sanitized_cluster_domain(openshift_client):
     route = openshift_client.resources.get(api_version='route.openshift.io/v1', kind='Route')
@@ -143,7 +129,7 @@ def write_dict_as_json(dictionairy):
         outfile.write(json_object)
         outfile.close()
 
-def query_nightly_metrics(openshift_client, thanos_quierier_host, prom_token, base_domain):
+def query_nightly_metrics(openshift_client, thanos_quierier_host, bearer_token, base_domain):
     fulcio_new_certs=None
     rekor_new_entries=None
     rekor_qps_by_api=None
@@ -155,7 +141,7 @@ def query_nightly_metrics(openshift_client, thanos_quierier_host, prom_token, ba
     rekor_new_entries_query_URL = 'https://{thanos_quierier_host}/api/v1/query?&{rekor_new_entries_query_data}'.format(thanos_quierier_host=thanos_quierier_host, rekor_new_entries_query_data=rekor_new_entries_query_data)
     rekor_qps_by_api_query_data='query=rekor_qps_by_api'
     rekor_qps_by_api_query_URL='https://{thanos_quierier_host}/api/v1/query?&{rekor_qps_by_api_query_data}'.format(thanos_quierier_host=thanos_quierier_host, rekor_qps_by_api_query_data=rekor_qps_by_api_query_data)
-    headers = {'Authorization': 'Bearer {prom_token}'.format(prom_token=prom_token)}
+    headers = {'Authorization': 'Bearer {bearer_token}'.format(bearer_token=bearer_token)}
 
     fulcio_new_certs_response_data = requests.get(fulcio_new_certs_query_URL, headers=headers, verify=True,)
     if fulcio_new_certs_response_data.status_code == 200 or fulcio_new_certs_response_data.status_code == 201:
@@ -231,16 +217,16 @@ def main():
     if thanos_quierier_host == 1 and RUN_TYPE == 'nightly':
         print('thanos-querier is not up and is a dependency of nightly metrics. Failing job.')
         exit(1)
-    prom_token = get_prom_token(openshift_client)
-    if prom_token == 1 and RUN_TYPE == 'nightly':
-        print('failed to retrieve the prometheus-user-workload-token- token which is required for nighlty metrics. Failing job.')
+    bearer_token = get_bearer_token()
+    if bearer_token == 1 and RUN_TYPE == 'nightly':
+        print('failed to retrieve the service Account bearer token which is required for nightly metrics. Failing job.')
         exit(1)
     base_domain = get_sanitized_cluster_domain(openshift_client)
     if base_domain == 1:
         print('failed to get base_domain which is required for both installation and nightly metrics. Failing job.')
         exit(1)
     if RUN_TYPE == 'nightly':
-        query_nightly_metrics(openshift_client, thanos_quierier_host, prom_token, base_domain)
+        query_nightly_metrics(openshift_client, thanos_quierier_host, bearer_token, base_domain)
         main_nightly()
     elif RUN_TYPE == 'installation':
         metrics_dict = { 'base_domain': base_domain}
