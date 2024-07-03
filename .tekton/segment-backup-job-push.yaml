@@ -23,7 +23,7 @@ spec:
   - name: git-url
     value: '{{source_url}}'
   - name: output-image
-    value: quay.io/redhat-user-workloads/rhtas-tenant/segment-backup-job/segment-backup-job:{{revision}}
+    value: quay.io/securesign/segment-backup-job:{{revision}}
   - name: path-context
     value: .
   - name: revision
