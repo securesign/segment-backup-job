@@ -13,6 +13,8 @@ jobs:
         branch: [main]
     with:
       branch: ${{ matrix.branch }}
-      images: '["registry.access.redhat.com/ubi9/python-311"]'
+      images: '["registry.redhat.io/rhel9/python-311"]'
     secrets:
       token: ${{ secrets.GITHUB_TOKEN }}
+      registry_redhat_io_username: ${{ secrets.REGISTRY_REDHAT_IO_USERNAME }}
+      registry_redhat_io_password: ${{ secrets.REGISTRY_REDHAT_IO_PASSWORD }}
