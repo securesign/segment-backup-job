@@ -43,7 +43,7 @@ def check_cluster_monitoring_config(openshift_client):
                             return 1
                 return 0
     except:
-        print('Could not get configmap cluster-monitoring-config in openshift-monitoring namespace, and thus it cannot have \`.telemeterClient.disabled: true\`. Continuing ...')
+        print('Could not get configmap cluster-monitoring-config in openshift-monitoring namespace, and thus it cannot have `.telemeterClient.disabled: true`. Continuing ...')
         return 0
 
 def check_console_operator(openshift_client):
@@ -58,7 +58,7 @@ def check_console_operator(openshift_client):
                 return 1
         return 0
     except:
-        print('could not get Console named cluster in namespace \`openshift-console\`, and thus it cannot have the disabled annotation. Continuing ...')
+        print('could not get Console named cluster in namespace `openshift-console`, and thus it cannot have the disabled annotation. Continuing ...')
         return 0
         
 def check_thanos_querier_status(openshift_client):
@@ -83,7 +83,7 @@ def check_thanos_querier_status(openshift_client):
     if route_up == True:
         return thanos_quierier_host
     elif route_up == False:
-        print('Timed out. Thanos Querier route did not spin up in the \`openshift-monitoring\` namespace.')
+        print('Timed out. Thanos Querier route did not spin up in the `openshift-monitoring` namespace.')
         return 1
 
 def check_user_workload_monitoring(openshift_client):
@@ -100,7 +100,7 @@ def check_user_workload_monitoring(openshift_client):
                     return 1
         return 0
     except:
-        print('Could not get ConfigMap \`cluster-monitoring-config\` in namespace \`openshift-monitoring\`, meaning userWorkloadMonitoring is not enabled or there are permissions errors.')
+        print('Could not get ConfigMap `cluster-monitoring-config` in namespace `openshift-monitoring`, meaning userWorkloadMonitoring is not enabled or there are permissions errors.')
         return 1
     
 def get_bearer_token():
