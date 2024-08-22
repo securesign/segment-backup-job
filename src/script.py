@@ -129,11 +129,17 @@ def write_dict_as_json(dictionairy):
         outfile.write(json_object)
         outfile.close()
 
-def query_nightly_metrics(openshift_client, thanos_quierier_host, bearer_token, base_domain):
+def fetch_response_data(query_url, headers, REQUESTS_CA_BUNDLE, REQUESTS_CA_BUNDLE_INTERNAL):
+    try:
+        response = requests.get(query_url, headers=headers, verify=REQUESTS_CA_BUNDLE)
+    except:
+        response = requests.get(query_url, headers=headers, verify=REQUESTS_CA_BUNDLE_INTERNAL)
+    return response
+
+def query_nightly_metrics(openshift_client, thanos_quierier_host, bearer_token, base_domain, REQUESTS_CA_BUNDLE, REQUESTS_CA_BUNDLE_INTERNAL):
     fulcio_new_certs=None
     rekor_new_entries=None
     rekor_qps_by_api=None
-    
 
     fulcio_new_certs_query_data='query=fulcio_new_certs'
     fulcio_new_certs_query_URL = 'https://{thanos_quierier_host}/api/v1/query?&{fulcio_new_certs_query_data}'.format(thanos_quierier_host=thanos_quierier_host, fulcio_new_certs_query_data=fulcio_new_certs_query_data)
@@ -143,13 +149,13 @@ def query_nightly_metrics(openshift_client, thanos_quierier_host, bearer_token, 
     rekor_qps_by_api_query_URL='https://{thanos_quierier_host}/api/v1/query?&{rekor_qps_by_api_query_data}'.format(thanos_quierier_host=thanos_quierier_host, rekor_qps_by_api_query_data=rekor_qps_by_api_query_data)
     headers = {'Authorization': 'Bearer {bearer_token}'.format(bearer_token=bearer_token)}
 
-    fulcio_new_certs_response_data = requests.get(fulcio_new_certs_query_URL, headers=headers, verify=True,)
+    fulcio_new_certs_response_data = fetch_response_data(fulcio_new_certs_query_URL, headers, REQUESTS_CA_BUNDLE, REQUESTS_CA_BUNDLE_INTERNAL)
     if fulcio_new_certs_response_data.status_code == 200 or fulcio_new_certs_response_data.status_code == 201:
         fulcio_new_certs_json = fulcio_new_certs_response_data.json()
         if fulcio_new_certs_json['status'] == 'success' and  fulcio_new_certs_json['data']['result']:
             fulcio_new_certs = fulcio_new_certs_json['data']['result'][0]['value'][1]
 
-    rekor_new_entries_response_data = requests.get(rekor_new_entries_query_URL,headers=headers, verify=True,)
+    rekor_new_entries_response_data = fetch_response_data(rekor_new_entries_query_URL, headers, REQUESTS_CA_BUNDLE, REQUESTS_CA_BUNDLE_INTERNAL)
     if rekor_new_entries_response_data.status_code == 200 or rekor_new_entries_response_data.status_code == 201:
         rekor_new_entries_json = rekor_new_entries_response_data.json()
         if rekor_new_entries_json['status'] == 'success' and rekor_new_entries_json['data']['result']:
@@ -158,8 +164,7 @@ def query_nightly_metrics(openshift_client, thanos_quierier_host, bearer_token, 
             else:
                 rekor_new_entries = rekor_new_entries_json['data']['result'][0]['value'][1]
 
-
-    rekor_qps_by_api_response_data = requests.get(rekor_qps_by_api_query_URL,headers=headers, verify=True,)
+    rekor_qps_by_api_response_data = fetch_response_data(rekor_qps_by_api_query_URL, headers, REQUESTS_CA_BUNDLE, REQUESTS_CA_BUNDLE_INTERNAL)
     if rekor_qps_by_api_response_data.status_code == 200 or rekor_qps_by_api_response_data.status_code == 201:
         rekor_qps_by_api_json = rekor_qps_by_api_response_data.json()
         if rekor_qps_by_api_json['status'] == 'success' and rekor_qps_by_api_json['data']['result']:
@@ -226,7 +231,9 @@ def main():
         print('failed to get base_domain which is required for both installation and nightly metrics. Failing job.')
         exit(1)
     if RUN_TYPE == 'nightly':
-        query_nightly_metrics(openshift_client, thanos_quierier_host, bearer_token, base_domain)
+        REQUESTS_CA_BUNDLE_INTERNAL = os.environ.get('REQUESTS_CA_BUNDLE_INTERNAL')
+        REQUESTS_CA_BUNDLE = os.environ.get('REQUESTS_CA_BUNDLE')
+        query_nightly_metrics(openshift_client, thanos_quierier_host, bearer_token, base_domain, REQUESTS_CA_BUNDLE, REQUESTS_CA_BUNDLE_INTERNAL)
         main_nightly()
     elif RUN_TYPE == 'installation':
         metrics_dict = { 'base_domain': base_domain}
