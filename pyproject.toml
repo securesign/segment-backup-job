@@ -8,7 +8,7 @@ name = "SegmentBackupJob"
 version = "1.0"
 dependencies = [
     'segment-analytics-python==2.2.3',
-    'PyYAML==6.0.1',
+    'PyYAML==6.0.2',
     'kubernetes==29.0.0',
     'openshift==0.13.2',
     'setuptools-scm==7.1.0',
