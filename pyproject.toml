@@ -13,6 +13,6 @@ dependencies = [
     'openshift==0.13.2',
     'setuptools-scm==7.1.0',
     'setuptools==73.0.1',
-    'idna==3.7',
+    'idna==3.10',
     'calver==2022.6.26'
 ]
