@@ -83,9 +83,9 @@ setuptools-scm==7.1.0 \
     --hash=sha256:6c508345a771aad7d56ebff0e70628bf2b0ec7573762be9960214730de278f27 \
     --hash=sha256:73988b6d848709e2af142aa48c986ea29592bbcfca5375678064708205253d8e
     # via -r requirements-build.in
-trove-classifiers==2024.3.25 \
-    --hash=sha256:6de68d06edd6fec5032162b6af22e818a4bb6f4ae2258e74699f8a41064b7cad \
-    --hash=sha256:c400e0bdceb018913339d53b07682d09a42aada687d070e90ee3c08477bec024
+trove-classifiers==2025.1.15.22 \
+    --hash=sha256:5f19c789d4f17f501d36c94dbbf969fb3e8c2784d008e6f5164dd2c3d6a2b07c \
+    --hash=sha256:90af74358d3a01b3532bc7b3c88d8c6a094c2fd50a563d13d9576179326d7ed9
     # via
     #   -r requirements-build.in
     #   hatchling
