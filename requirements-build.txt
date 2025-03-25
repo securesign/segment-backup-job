@@ -52,10 +52,16 @@ flit-core==3.11.0 \
     --hash=sha256:6ceeee3219e9d2ea282041f3e027c441597b450b33007cb81168e887b6113a8f \
     --hash=sha256:fe464c086f630f106c0fc5001ee377980f45938f03f8f0d03da08a4841748541
     # via -r requirements-build.in
+hatch-vcs==0.4.0 \
+    --hash=sha256:093810748fe01db0d451fabcf2c1ac2688caefd232d4ede967090b1c1b07d9f7 \
+    --hash=sha256:b8a2b6bee54cf6f9fc93762db73890017ae59c9081d1038a41f16235ceaf8b2c
+    # via -r requirements-build.in
 hatchling==1.27.0 \
     --hash=sha256:971c296d9819abb3811112fc52c7a9751c8d381898f36533bb16f9791e941fd6 \
     --hash=sha256:d3a2f3567c4f926ea39849cdf924c7e99e6686c9c8e288ae1037c8fa2a5d937b
-    # via -r requirements-build.in
+    # via
+    #   -r requirements-build.in
+    #   hatch-vcs
 mypy==1.14.0 \
     --hash=sha256:00df23b42e533e02a6f0055e54de9a6ed491cd8b7ea738647364fd3a39ea7efc \
     --hash=sha256:0b16738b1d80ec4334654e89e798eb705ac0c36c8a5c4798496cd3623aa02286 \
@@ -122,7 +128,9 @@ poetry-core==1.9.1 \
 setuptools-scm==7.1.0 \
     --hash=sha256:6c508345a771aad7d56ebff0e70628bf2b0ec7573762be9960214730de278f27 \
     --hash=sha256:73988b6d848709e2af142aa48c986ea29592bbcfca5375678064708205253d8e
-    # via -r requirements-build.in
+    # via
+    #   -r requirements-build.in
+    #   hatch-vcs
 trove-classifiers==2024.3.25 \
     --hash=sha256:6de68d06edd6fec5032162b6af22e818a4bb6f4ae2258e74699f8a41064b7cad \
     --hash=sha256:c400e0bdceb018913339d53b07682d09a42aada687d070e90ee3c08477bec024
