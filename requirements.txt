@@ -242,9 +242,9 @@ rsa==4.9 \
     --hash=sha256:90260d9058e514786967344d0ef75fa8727eed8a7d2e43ce9f4bcf1b536174f7 \
     --hash=sha256:e38464a49c6c85d7f1351b0126661487a7e0a14a50f1675ec50eb34d4f20ef21
     # via google-auth
-segment-analytics-python==2.2.3 \
-    --hash=sha256:06cc3d8e79103f02c3878ec66cb66152415473d0d2a142b98a0ee18da972e109 \
-    --hash=sha256:0df5908e3df74b4482f33392fdd450df4c8351bf54974376fbe6bf33b0700865
+segment-analytics-python==2.3.4 \
+    --hash=sha256:ea2b6432bef1c017d24f69bf5f778e45c2385ec9df527242e2b42ee6cefd7367 \
+    --hash=sha256:f188e864cc0fed9fb141aff73c21bfaab783a1dd1b97ab1eff44340aed68f50b
     # via SegmentBackupJob (pyproject.toml)
 setuptools-scm==7.1.0 \
     --hash=sha256:6c508345a771aad7d56ebff0e70628bf2b0ec7573762be9960214730de278f27

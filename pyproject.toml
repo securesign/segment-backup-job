@@ -7,7 +7,7 @@ requires-python = ">=3.11"
 name = "SegmentBackupJob"
 version = "1.0"
 dependencies = [
-    'segment-analytics-python==2.2.3',
+    'segment-analytics-python==2.3.4',
     'PyYAML==6.0.2',
     'kubernetes==29.0.0',
     'openshift==0.13.2',
