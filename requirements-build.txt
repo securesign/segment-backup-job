@@ -48,9 +48,9 @@ cython==0.29.37 \
     --hash=sha256:fa5b6a0f69bf1823c9fd038fa77a2568b78fda2de045a95b48a71dee4d0d578f \
     --hash=sha256:fe0eaf6b1e9ee97c5ee7bfc943f00e36cf59d929db16886cb018352bff8208da
     # via -r requirements-build.in
-flit-core==3.11.0 \
-    --hash=sha256:6ceeee3219e9d2ea282041f3e027c441597b450b33007cb81168e887b6113a8f \
-    --hash=sha256:fe464c086f630f106c0fc5001ee377980f45938f03f8f0d03da08a4841748541
+flit-core==3.12.0 \
+    --hash=sha256:18f63100d6f94385c6ed57a72073443e1a71a4acb4339491615d0f16d6ff01b2 \
+    --hash=sha256:e7a0304069ea895172e3c7bb703292e992c5d1555dd1233ab7b5621b5b69e62c
     # via -r requirements-build.in
 hatch-vcs==0.4.0 \
     --hash=sha256:093810748fe01db0d451fabcf2c1ac2688caefd232d4ede967090b1c1b07d9f7 \
