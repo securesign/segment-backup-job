@@ -137,9 +137,9 @@ trove-classifiers==2024.3.25 \
     # via
     #   -r requirements-build.in
     #   hatchling
-types-psutil==7.0.0.20250218 \
-    --hash=sha256:1447a30c282aafefcf8941ece854e1100eee7b0296a9d9be9977292f0269b121 \
-    --hash=sha256:1e642cdafe837b240295b23b1cbd4691d80b08a07d29932143cbbae30eb0db9c
+types-psutil==7.0.0.20250401 \
+    --hash=sha256:2a7d663c0888a079fc1643ebc109ad12e57a21c9552a9e2035da504191336dbf \
+    --hash=sha256:ed23f7140368104afe4e05a6085a5fa56fbe8c880a0f4dfe8d63e041106071ed
     # via -r requirements-build.in
 types-setuptools==76.0.0.20250313 \
     --hash=sha256:b2be66f550f95f3cad2a7d46177b273c7e9c80df7d257fa57addbbcfc8126a9e \
