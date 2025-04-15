@@ -137,14 +137,6 @@ trove-classifiers==2024.10.21.16 \
     # via
     #   -r requirements-build.in
     #   hatchling
-types-psutil==7.0.0.20250401 \
-    --hash=sha256:2a7d663c0888a079fc1643ebc109ad12e57a21c9552a9e2035da504191336dbf \
-    --hash=sha256:ed23f7140368104afe4e05a6085a5fa56fbe8c880a0f4dfe8d63e041106071ed
-    # via -r requirements-build.in
-types-setuptools==76.0.0.20250313 \
-    --hash=sha256:b2be66f550f95f3cad2a7d46177b273c7e9c80df7d257fa57addbbcfc8126a9e \
-    --hash=sha256:bf454b2a49b8cfd7ebcf5844d4dd5fe4c8666782df1e3663c5866fd51a47460e
-    # via -r requirements-build.in
 typing-extensions==4.13.2 \
     --hash=sha256:a439e7c04b49fec3e5d3e2beaa21755cadbbdc391694e28ccdd36ca4a1408f8c \
     --hash=sha256:e6c81219bd689f51865d9e372991c540bda33a0379d5573cddb9a3a23f7caaef
@@ -164,4 +156,3 @@ setuptools==78.0.2 \
     # via
     #   -r requirements-build.in
     #   setuptools-scm
-    #   types-setuptools
