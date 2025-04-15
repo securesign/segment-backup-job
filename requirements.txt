@@ -12,9 +12,9 @@ cachetools==5.5.2 \
     --hash=sha256:1a661caa9175d26759571b2e19580f9d6393969e5dfca11fdb1f947a23e640d4 \
     --hash=sha256:d26a22bcc62eb95c3beabd9f1ee5e820d3d2704fe2967cbe350e20c8ffcd3f0a
     # via google-auth
-calver==2022.6.26 \
-    --hash=sha256:a1d7fcdd67797afc52ee36ffb8c8adf6643173864306547bfd1380cbce6310a0 \
-    --hash=sha256:e05493a3b17517ef1748fbe610da11f10485faa7c416b9d33fd4a52d74894f8b
+calver==2025.4.2 \
+    --hash=sha256:5e804daa67cbbf5b1c0cc0960f93434a38887bedd5c5d81f0e0b77e98231b24e \
+    --hash=sha256:f854bb865a070da3d45f989f812b2fb6847a10c2d5a7490490ec16832617a463
     # via SegmentBackupJob (pyproject.toml)
 certifi==2025.1.31 \
     --hash=sha256:3d5da6925056f6f18f119200434a4780a94263f10d1c21d032a6f6b2baa20651 \
