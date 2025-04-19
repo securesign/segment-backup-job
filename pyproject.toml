@@ -16,5 +16,5 @@ dependencies = [
     'idna==3.10',
     'calver==2025.4.2',
     'types-psutil==7.0.0.20250401',
-    'types-setuptools==76.0.0.20250313'
+    'types-setuptools==78.1.0.20250329'
 ]
