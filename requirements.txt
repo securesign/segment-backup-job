@@ -280,9 +280,9 @@ websocket-client==1.8.0 \
     # via kubernetes
 
 # The following packages are considered to be unsafe in a requirements file:
-setuptools==73.0.1 \
-    --hash=sha256:b208925fcb9f7af924ed2dc04708ea89791e24bde0d3020b27df0e116088b34e \
-    --hash=sha256:d59a3e788ab7e012ab2c4baed1b376da6366883ee20d7a5fc426816e3d7b1193
+setuptools==78.1.0 \
+    --hash=sha256:18fd474d4a82a5f83dac888df697af65afa82dec7323d09c3e37d1f14288da54 \
+    --hash=sha256:3e386e96793c8702ae83d17b853fb93d3e09ef82ec62722e61da5cd22376dcd8
     # via
     #   SegmentBackupJob (pyproject.toml)
     #   setuptools-scm
