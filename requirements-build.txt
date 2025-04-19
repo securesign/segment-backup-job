@@ -121,9 +121,9 @@ pluggy==1.5.0 \
     # via
     #   -r requirements-build.in
     #   hatchling
-poetry-core==1.9.1 \
-    --hash=sha256:6f45dd3598e0de8d9b0367360253d4c5d4d0110c8f5c71120a14f0e0f116c1a0 \
-    --hash=sha256:7a2d49214bf58b4f17f99d6891d947a9836c9899a67a5069f52d7b67217f61b8
+poetry-core==2.1.2 \
+    --hash=sha256:ecb1e8f7d4f071a21cd0feb8c19bd1aec80de6fb0e82aa9d809a591e544431b4 \
+    --hash=sha256:f9dbbbd0ebf9755476a1d57f04b30e9aecf71ca9dc2fcd4b17aba92c0002aa04
     # via -r requirements-build.in
 setuptools-scm==7.1.0 \
     --hash=sha256:6c508345a771aad7d56ebff0e70628bf2b0ec7573762be9960214730de278f27 \
