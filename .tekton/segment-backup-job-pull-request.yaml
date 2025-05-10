@@ -7,7 +7,8 @@ metadata:
     build.appstudio.redhat.com/pull_request_number: '{{pull_request_number}}'
     build.appstudio.redhat.com/target_branch: '{{target_branch}}'
     pipelinesascode.tekton.dev/max-keep-runs: "3"
-    pipelinesascode.tekton.dev/on-cel-expression: event == "pull_request" && target_branch == "main"
+    pipelinesascode.tekton.dev/on-cel-expression: event == "pull_request" && target_branch
+      == "main"
   creationTimestamp: null
   labels:
     appstudio.openshift.io/application: segment-backup-job
@@ -34,17 +35,19 @@ spec:
   - name: build-source-image
     value: "true"
   - name: prefetch-input
-    value: '{"path": ".", "type": "pip", "requirements_build_files": ["requirements-build.txt", "requirements.txt"]}'
+    value: '{"path": ".", "type": "pip", "requirements_build_files": ["requirements-build.txt",
+      "requirements.txt"]}'
   pipelineRef:
-    resolver: git
     params:
-      - name: url
-        value: 'https://github.com/securesign/pipelines.git'
-      - name: revision
-        value: 'main'
-      - name: pathInRepo
-        value: 'pipelines/docker-build-oci-ta.yaml'
-  taskRunTemplate: {}
+    - name: url
+      value: https://github.com/securesign/pipelines.git
+    - name: revision
+      value: main
+    - name: pathInRepo
+      value: pipelines/docker-build-oci-ta.yaml
+    resolver: git
+  taskRunTemplate:
+    serviceAccountName: build-pipeline-segment-backup-job
   workspaces:
   - name: workspace
     volumeClaimTemplate:
