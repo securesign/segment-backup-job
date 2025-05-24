@@ -116,9 +116,9 @@ charset-normalizer==3.4.1 \
     --hash=sha256:fd4ec41f914fa74ad1b8304bbc634b3de73d2a0889bd32076342a573e0779e00 \
     --hash=sha256:ffc9202a29ab3920fa812879e95a9e78b2465fd10be7fcbd042899695d75e616
     # via requests
-google-auth==2.38.0 \
-    --hash=sha256:8285113607d3b80a3f1543b75962447ba8a09fe85783432a784fdeef6ac094c4 \
-    --hash=sha256:e7dae6694313f434a2727bf2906f27ad259bae090d7aa896590d86feec3d9d4a
+google-auth==2.40.2 \
+    --hash=sha256:a33cde547a2134273226fa4b853883559947ebe9207521f7afc707efbf690f58 \
+    --hash=sha256:f7e568d42eedfded58734f6a60c58321896a621f7c116c411550a4b4a13da90b
     # via kubernetes
 idna==3.10 \
     --hash=sha256:12f65c9b470abda6dc35cf8e63cc574b1c52b11df2c86030af0ac09b01b13ea9 \
