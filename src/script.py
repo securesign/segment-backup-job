@@ -4,15 +4,21 @@ import yaml
 from openshift.dynamic import DynamicClient
 import time
 import json
-import base64
 import os
 import requests
-from requests.exceptions import HTTPError
 from nightly import main_nightly
 from installation import main_installation
 
 def openshift_setup():
-    config.load_incluster_config()
+    try:
+        config.load_incluster_config()
+        print("Using in-cluster configuration.")
+    except config.ConfigException:
+        try:
+            config.load_kube_config()
+            print("Using kubeconfig file.")
+        except config.ConfigException:
+            raise RuntimeError("Could not load in-cluster or kubeconfig configuration.")
     try:
         configuration = client.Configuration().get_default_copy()
     except AttributeError:
@@ -46,45 +52,29 @@ def check_cluster_monitoring_config(openshift_client):
         print('Could not get configmap cluster-monitoring-config in openshift-monitoring namespace, and thus it cannot have `.telemeterClient.disabled: true`. Continuing ...')
         return 0
 
-def check_console_operator(openshift_client):
-    cluster_operator_query = openshift_client.resources.get(api_version='operator.openshift.io/v1', kind='Console')
-    try:
-        cluster_operator = cluster_operator_query.get(name='cluster', namespace='openshift-console')
-        for annotation, value in cluster_operator['metadata']['annotations']:
-
-            if (annotation == 'telemetry.console.openshift.io/DISABLED' or annotation == 'telemetry.console.openshift.io/disabled') and (value == True or value == 'true' or value == 'True'):
-                return 1
-            if (annotation == 'telemetry.console.openshift.io/ENABLED' or annotation == 'telemetry.console.openshift.io/enabled') and (value == False or value == 'false' or value == 'False'):
-                return 1
-        return 0
-    except:
-        print('could not get Console named cluster in namespace `openshift-console`, and thus it cannot have the disabled annotation. Continuing ...')
-        return 0
-        
-def check_thanos_querier_status(openshift_client):
-    route = openshift_client.resources.get(api_version='route.openshift.io/v1', kind='Route')
+def check_thanos_querier_status(query_url, bearer_token, REQUESTS_CA_BUNDLE, REQUESTS_CA_BUNDLE_INTERNAL):
     attempt = 0
     attempts = 30
     sleep_interval = 5
-    route_up = False
-    thanos_quierier_host = ''
 
+    headers = {'Authorization': '{bearer_token}'.format(bearer_token=bearer_token)}
     while attempt < attempts:
         try:
-            thanos_quierier_route = route.get(name='thanos-querier', namespace='openshift-monitoring')
-            route_up = True
-            thanos_quierier_host = thanos_quierier_route.spec.host
-            break
-        except:
-            print('Thanos Querier route is not up yet. Retrying in ', sleep_interval, ' seconds...')
+            response = fetch_response_data(query_url+"/api/v1/status/buildinfo", headers, REQUESTS_CA_BUNDLE, REQUESTS_CA_BUNDLE_INTERNAL)
+            print(response)
+            if response.status_code == 200 or response.status_code == 201:
+                return True
+            else:
+                print('API is not accessible yet. Retrying in ', sleep_interval, ' seconds...')
+            attempt = attempt + 1
+            time.sleep(sleep_interval)
+        except requests.exceptions.RequestException as e:
+            print(f"Request failed with error: {e}")
             attempt = attempt + 1
             time.sleep(sleep_interval)
     
-    if route_up == True:
-        return thanos_quierier_host
-    elif route_up == False:
-        print('Timed out. Thanos Querier route did not spin up in the `openshift-monitoring` namespace.')
-        return 1
+    print('Timed out. Thanos Querier API did not respond in the configured URL.')
+    return False
 
 def check_user_workload_monitoring(openshift_client):
     v1_configmaps = openshift_client.resources.get(api_version='v1', kind='ConfigMap')
@@ -104,24 +94,15 @@ def check_user_workload_monitoring(openshift_client):
         return 1
     
 def get_bearer_token():
-    try:
-        token_file = open('/var/run/secrets/kubernetes.io/serviceaccount/token', 'r')
-        bearer_token = token_file.read().strip()
-        token_file.close()
-    except:
-        print("Could not read the bearer token.")
-        return 1
-    return bearer_token
+    api_client = client.ApiClient()
+    configuration = api_client.configuration
 
-def get_sanitized_cluster_domain(openshift_client):
-    route = openshift_client.resources.get(api_version='route.openshift.io/v1', kind='Route')
-    try:
-        openshift_console_route = route.get(name='console', namespace='openshift-console')
-        sanitized_cluster_domain = openshift_console_route.spec.host[31:]
-        return sanitized_cluster_domain
-    except:
-        print('failed to get base cluster domain.')
-        return 1
+    bearer_token = configuration.api_key.get('authorization')
+
+    if not bearer_token:
+        raise RuntimeError("Bearer token not found in the loaded configuration.")
+
+    return bearer_token
 
 def write_dict_as_json(dictionairy):
     json_object = json.dumps(dictionairy, indent=4)
@@ -142,12 +123,12 @@ def query_nightly_metrics(openshift_client, thanos_quierier_host, bearer_token, 
     rekor_qps_by_api=None
 
     fulcio_new_certs_query_data='query=fulcio_new_certs'
-    fulcio_new_certs_query_URL = 'https://{thanos_quierier_host}/api/v1/query?&{fulcio_new_certs_query_data}'.format(thanos_quierier_host=thanos_quierier_host, fulcio_new_certs_query_data=fulcio_new_certs_query_data)
+    fulcio_new_certs_query_URL = '{thanos_quierier_host}/api/v1/query?&{fulcio_new_certs_query_data}'.format(thanos_quierier_host=thanos_quierier_host, fulcio_new_certs_query_data=fulcio_new_certs_query_data)
     rekor_new_entries_query_data='query=rekor_new_entries'
-    rekor_new_entries_query_URL = 'https://{thanos_quierier_host}/api/v1/query?&{rekor_new_entries_query_data}'.format(thanos_quierier_host=thanos_quierier_host, rekor_new_entries_query_data=rekor_new_entries_query_data)
+    rekor_new_entries_query_URL = '{thanos_quierier_host}/api/v1/query?&{rekor_new_entries_query_data}'.format(thanos_quierier_host=thanos_quierier_host, rekor_new_entries_query_data=rekor_new_entries_query_data)
     rekor_qps_by_api_query_data='query=rekor_qps_by_api'
-    rekor_qps_by_api_query_URL='https://{thanos_quierier_host}/api/v1/query?&{rekor_qps_by_api_query_data}'.format(thanos_quierier_host=thanos_quierier_host, rekor_qps_by_api_query_data=rekor_qps_by_api_query_data)
-    headers = {'Authorization': 'Bearer {bearer_token}'.format(bearer_token=bearer_token)}
+    rekor_qps_by_api_query_URL='{thanos_quierier_host}/api/v1/query?&{rekor_qps_by_api_query_data}'.format(thanos_quierier_host=thanos_quierier_host, rekor_qps_by_api_query_data=rekor_qps_by_api_query_data)
+    headers = {'Authorization': '{bearer_token}'.format(bearer_token=bearer_token)}
 
     fulcio_new_certs_response_data = fetch_response_data(fulcio_new_certs_query_URL, headers, REQUESTS_CA_BUNDLE, REQUESTS_CA_BUNDLE_INTERNAL)
     if fulcio_new_certs_response_data.status_code == 200 or fulcio_new_certs_response_data.status_code == 201:
@@ -204,37 +185,42 @@ def main():
     if check_cluster_monitoring_config_status == 1:
         print('gracefully terminating, telemetry explicitly disabled in cluster_monitoring_config')
         exit(0)
-    check_console_operator_status = check_console_operator(openshift_client)   
-    if check_console_operator_status == 1:
-        print('gracefully terminating, telemetry explicitly disabled as an annotation to the Console operator')
-        exit(0)
+
     RUN_TYPE = os.environ.get('RUN_TYPE')
     if RUN_TYPE is not None:
         print('running in mode: ', RUN_TYPE)
     else:
         print('RUN_TYPE has not be set, job will fail.')
         exit(1)
-    user_workload_monitoring_status = check_user_workload_monitoring(openshift_client)
-    if user_workload_monitoring_status == 1 and RUN_TYPE == "nightly":
-        print('userWorkloadMonitoring is a requirement for nightly metrics. Failing job.')
-        exit(0)
-    thanos_quierier_host = check_thanos_querier_status(openshift_client)
-    if thanos_quierier_host == 1 and RUN_TYPE == 'nightly':
-        print('thanos-querier is not up and is a dependency of nightly metrics. Failing job.')
-        exit(1)
-    bearer_token = get_bearer_token()
-    if bearer_token == 1 and RUN_TYPE == 'nightly':
-        print('failed to retrieve the service Account bearer token which is required for nightly metrics. Failing job.')
-        exit(1)
-    base_domain = get_sanitized_cluster_domain(openshift_client)
-    if base_domain == 1:
+
+    base_domain = os.environ.get('BASE_DOMAIN')
+    if base_domain is None:
         print('failed to get base_domain which is required for both installation and nightly metrics. Failing job.')
         exit(1)
+
     if RUN_TYPE == 'nightly':
-        REQUESTS_CA_BUNDLE_INTERNAL = os.environ.get('REQUESTS_CA_BUNDLE_INTERNAL')
-        REQUESTS_CA_BUNDLE = os.environ.get('REQUESTS_CA_BUNDLE')
-        query_nightly_metrics(openshift_client, thanos_quierier_host, bearer_token, base_domain, REQUESTS_CA_BUNDLE, REQUESTS_CA_BUNDLE_INTERNAL)
+        requests_ca_bundle_internal = os.environ.get('REQUESTS_CA_BUNDLE_INTERNAL')
+        requests_ca_bundle = os.environ.get('REQUESTS_CA_BUNDLE')
+
+        user_workload_monitoring_status = check_user_workload_monitoring(openshift_client)
+        if user_workload_monitoring_status == 1:
+            print('userWorkloadMonitoring is a requirement for nightly metrics. Failing job.')
+            exit(0)
+
+        bearer_token = get_bearer_token()
+        if bearer_token == 1:
+            print('failed to retrieve the service Account bearer token which is required for nightly metrics. Failing job.')
+            exit(1)
+
+        thanos_querier_url = os.environ.get('THANOS_QUERIER_URL', "https://thanos-querier.openshift-monitoring.svc:9091")
+        thanos_status = check_thanos_querier_status(thanos_querier_url, bearer_token, requests_ca_bundle, requests_ca_bundle_internal)
+        if not thanos_status:
+            print('thanos-querier is not up and is a dependency of nightly metrics. Failing job.')
+            exit(1)
+
+        query_nightly_metrics(openshift_client, thanos_querier_url, bearer_token, base_domain, requests_ca_bundle, requests_ca_bundle_internal)
         main_nightly()
+
     elif RUN_TYPE == 'installation':
         metrics_dict = { 'base_domain': base_domain}
         write_dict_as_json(metrics_dict)
