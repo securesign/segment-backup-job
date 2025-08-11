@@ -256,7 +256,7 @@ six==1.17.0 \
     #   kubernetes
     #   openshift
     #   python-dateutil
-types-psutil==7.0.0.20250401 \
+types-psutil==7.0.0.20250801 \
     --hash=sha256:2a7d663c0888a079fc1643ebc109ad12e57a21c9552a9e2035da504191336dbf \
     --hash=sha256:ed23f7140368104afe4e05a6085a5fa56fbe8c880a0f4dfe8d63e041106071ed
     # via SegmentBackupJob (pyproject.toml)
