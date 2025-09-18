@@ -6,7 +6,8 @@ LABEL io.k8s.display-name="segment collection"
 LABEL io.openshift.tags="segment,segment-collection"
 LABEL summary="Provides the segment data collection service"
 LABEL com.redhat.component="segment-collection"
-LABEL name="segment-collection"
+LABEL name="rhtas/segment-reporting-rhel9"
+LABEL cpe="cpe:/a:redhat:trusted_artifact_signer:1.2::el9"
 
 
 USER 0
