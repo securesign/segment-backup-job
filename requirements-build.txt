@@ -4,7 +4,7 @@
 #
 #    pip-compile --allow-unsafe --generate-hashes requirements-build.in
 #
-Cython==3.1.1 \
+Cython==3.1.4 \
     --hash=sha256:011cdcbf7725f0cfc1abc55ec83d326e788050711272131daf3cc24a19c34bb2 \
     --hash=sha256:020089f9c9f10269181f17660a2cada7d4577bd8eea24b7d2b14e6b64b6996be \
     --hash=sha256:07621e044f332d18139df2ccfcc930151fd323c2f61a58c82f304cffc9eb5280 \
