@@ -82,7 +82,7 @@ hatchling==1.27.0 \
     # via
     #   -r requirements-build.in
     #   hatch-vcs
-mypy==1.14.0 \
+mypy==1.18.2 \
     --hash=sha256:00df23b42e533e02a6f0055e54de9a6ed491cd8b7ea738647364fd3a39ea7efc \
     --hash=sha256:0b16738b1d80ec4334654e89e798eb705ac0c36c8a5c4798496cd3623aa02286 \
     --hash=sha256:10065fcebb7c66df04b05fc799a854b1ae24d9963c8bb27e9064a9bdb43aa8ad \
