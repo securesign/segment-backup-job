@@ -17,6 +17,9 @@ COPY . .
 
 ADD licenses/ /licenses/
 
-RUN pip install -U pip && pip install -r /opt/app-root/src/requirements.txt --force-reinstall
+ENV HATCH_METADATA_CLASSIFIERS_NO_VERIFY=1
+
+RUN pip install -U pip && \
+    pip install -r /opt/app-root/src/requirements.txt --force-reinstall
 
 USER 1001
