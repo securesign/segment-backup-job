@@ -120,7 +120,7 @@ google-auth==2.40.2 \
     --hash=sha256:a33cde547a2134273226fa4b853883559947ebe9207521f7afc707efbf690f58 \
     --hash=sha256:f7e568d42eedfded58734f6a60c58321896a621f7c116c411550a4b4a13da90b
     # via kubernetes
-idna==3.10 \
+idna==3.11 \
     --hash=sha256:12f65c9b470abda6dc35cf8e63cc574b1c52b11df2c86030af0ac09b01b13ea9 \
     --hash=sha256:946d195a0d259cbba61165e88e65941f16e9b36ea6ddb97f00452bae8b1287d3
     # via
