@@ -4,7 +4,7 @@ flit_core<4,>=3.11
 flit_core<4,>=3.2
 flit_core>=3.3
 hatch-vcs==0.4.0
-hatchling<2,>=1.6.0
+hatchling>=1.28.0
 mypy<=1.14.0,>=1.4.1
 mypy_extensions>=1.0.0
 packaging>=20
