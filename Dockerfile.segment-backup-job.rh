@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi9/python-312@sha256:6d26d720dce170a26627ab57d186ed823880b9325d3559ce81e138b8d8ac2bdd
+FROM registry.access.redhat.com/ubi9/python-312@sha256:1f338287291cfa1c6682adfae8b42d074d59ec6087b5cfefb7076e3d956f0883
 
 LABEL description="This image provides a data collection service for segment"
 LABEL io.k8s.description="This image provides a data collection service for segment"
@@ -6,7 +6,7 @@ LABEL io.k8s.display-name="segment collection"
 LABEL io.openshift.tags="segment,segment-collection"
 LABEL summary="Provides the segment data collection service"
 LABEL com.redhat.component="segment-collection"
-LABEL name="segment-collection"
+LABEL name="rhtas/segment-reporting-rhel9"
 
 
 USER 0
@@ -17,6 +17,9 @@ COPY . .
 
 ADD licenses/ /licenses/
 
-RUN pip install -U pip && pip install -r /opt/app-root/src/requirements.txt --force-reinstall
+ENV HATCH_METADATA_CLASSIFIERS_NO_VERIFY=1
+
+RUN pip install -U pip && \
+    pip install -r /opt/app-root/src/requirements.txt --force-reinstall
 
 USER 1001
