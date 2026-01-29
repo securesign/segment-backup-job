@@ -137,6 +137,10 @@ charset-normalizer==3.4.4 \
     --hash=sha256:faa3a41b2b66b6e50f84ae4a68c64fcd0c44355741c6374813a800cd6695db9e \
     --hash=sha256:fd44c878ea55ba351104cb93cc85e74916eb8fa440ca7903e57575e97394f608
     # via requests
+durationpy==0.10 \
+    --hash=sha256:1fa6893409a6e739c9c72334fc65cca1f355dbdd93405d30f726deb5bde42fba \
+    --hash=sha256:3b41e1b601234296b4fb368338fdcd3e13e0b4fb5b67345948f4f2bf9868b286
+    # via kubernetes
 google-auth==2.47.0 \
     --hash=sha256:833229070a9dfee1a353ae9877dcd2dec069a8281a4e72e72f77d4a70ff945da \
     --hash=sha256:c516d68336bfde7cf0da26aab674a36fedcf04b37ac4edd59c597178760c3498
@@ -147,9 +151,9 @@ idna==3.11 \
     # via
     #   SegmentBackupJob (pyproject.toml)
     #   requests
-kubernetes==29.0.0 \
-    --hash=sha256:ab8cb0e0576ccdfb71886366efb102c6a20f268d817be065ce7f9909c631e43e \
-    --hash=sha256:c4812e227ae74d07d53c88293e564e54b850452715a59a927e7e1bc6b9a60459
+kubernetes==35.0.0 \
+    --hash=sha256:39e2b33b46e5834ef6c3985ebfe2047ab39135d41de51ce7641a7ca5b372a13d \
+    --hash=sha256:3d00d344944239821458b9efd484d6df9f011da367ecb155dadf9513f05f09ee
     # via
     #   SegmentBackupJob (pyproject.toml)
     #   openshift

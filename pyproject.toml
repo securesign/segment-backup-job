@@ -9,7 +9,7 @@ version = "1.0"
 dependencies = [
     'segment-analytics-python==2.3.4',
     'PyYAML==6.0.2',
-    'kubernetes==29.0.0',
+    'kubernetes==35.0.0',
     'openshift==0.13.2',
     'setuptools-scm==9.2.2',
     'setuptools>=80',
