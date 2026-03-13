@@ -8,9 +8,9 @@ backoff==2.2.1 \
     --hash=sha256:03f829f5bb1923180821643f8753b0502c3b682293992485b0eef2807afa5cba \
     --hash=sha256:63579f9a0628e06278f7e47b7d7d5b6ce20dc65c5e96a6f3ca99a6adca0396e8
     # via segment-analytics-python
-cachetools==6.2.5 \
-    --hash=sha256:6d8bfbba1ba94412fb9d9196c4da7a87e9d4928fffc5e93542965dca4740c77f \
-    --hash=sha256:db3ae5465e90befb7c74720dd9308d77a09b7cf13433570e07caa0845c30d5fe
+cachetools==7.0.5 \
+    --hash=sha256:0cd042c24377200c1dcd225f8b7b12b0ca53cc2c961b43757e774ebe190fd990 \
+    --hash=sha256:46bc8ebefbe485407621d0a4264b23c080cedd913921bad7ac3ed2f26c183114
     # via google-auth
 calver==2025.10.20 \
     --hash=sha256:c98b376c2424642224d456b2f70c51402343e008c63d204634665e1a2a2835f5 \
