@@ -287,9 +287,9 @@ segment-analytics-python==2.3.5 \
     --hash=sha256:139f111ce0d6f5ec04ac881014f62ac238b8a74d8dacb81ab69822d428f8219e \
     --hash=sha256:eedaf6290e95025adf11cb73769dac662370ca2187fecdc6c66ddd96c508255a
     # via SegmentBackupJob (pyproject.toml)
-setuptools-scm==9.2.2 \
-    --hash=sha256:1c674ab4665686a0887d7e24c03ab25f24201c213e82ea689d2f3e169ef7ef57 \
-    --hash=sha256:30e8f84d2ab1ba7cb0e653429b179395d0c33775d54807fc5f1dd6671801aef7
+setuptools-scm==10.0.5 \
+    --hash=sha256:bbba8fe754516cdefd017f4456721775e6ef9662bd7887fb52ae26813d4838c3 \
+    --hash=sha256:f611037d8aae618221503b8fa89319f073438252ae3420e01c9ceec249131a0a
     # via SegmentBackupJob (pyproject.toml)
 six==1.17.0 \
     --hash=sha256:4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274 \
