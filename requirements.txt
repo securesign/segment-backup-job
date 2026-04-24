@@ -159,9 +159,9 @@ openshift==0.13.2 \
     --hash=sha256:f1459006fc7f96ff7d2f6c0c00bdef5cb2e75a1b466f601997d9084a816a8949 \
     --hash=sha256:f55789fce56fcbf7e2cd9377a68c4a99ab406074d3324b9abcca98477d101471
     # via SegmentBackupJob (pyproject.toml)
-packaging==26.0 \
-    --hash=sha256:00243ae351a257117b6a241061796684b084ed1c516a08c48a3f7e147a9d80b4 \
-    --hash=sha256:b36f1fef9334a5588b4166f8bcd26a14e521f2b55e6b9de3aaa80d3ff7a37529
+packaging==26.2 \
+    --hash=sha256:5fc45236b9446107ff2415ce77c807cee2862cb6fac22b8a73826d0693b0980e \
+    --hash=sha256:ff452ff5a3e828ce110190feff1178bb1f2ea2281fa2075aadb987c2fb221661
     # via setuptools-scm
 pyasn1==0.6.3 \
     --hash=sha256:697a8ecd6d98891189184ca1fa05d1bb00e2f84b5977c481452050549c8a72cf \
