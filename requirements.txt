@@ -278,9 +278,9 @@ types-psutil==7.2.1.20251231 \
     --hash=sha256:40735ca2fc818aed9dcbff7acb3317a774896615e3f4a7bd356afa224b9178e3 \
     --hash=sha256:dbf9df530b1130e131e4211ed8cea62c08007bfa69faf2883d296bd241d30e4a
     # via SegmentBackupJob (pyproject.toml)
-types-setuptools==76.0.0.20250313 \
-    --hash=sha256:b2be66f550f95f3cad2a7d46177b273c7e9c80df7d257fa57addbbcfc8126a9e \
-    --hash=sha256:bf454b2a49b8cfd7ebcf5844d4dd5fe4c8666782df1e3663c5866fd51a47460e
+types-setuptools==82.0.0.20260508 \
+    --hash=sha256:ba1d863bbd11526d7232bca8d5a4aebe1d38fa1677a550f47a2692b7d5776900 \
+    --hash=sha256:e76ade6f42ba9b4211636b84b65a8e55948a67ffe81f9a44e66b8af93d57e77e
     # via SegmentBackupJob (pyproject.toml)
 urllib3==2.6.3 \
     --hash=sha256:1b62b6884944a57dbe321509ab94fd4d3b307075e0c2eae991ac71ee15ad38ed \
