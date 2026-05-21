@@ -9,12 +9,12 @@ version = "1.0"
 dependencies = [
     'segment-analytics-python==2.3.6',
     'PyYAML==6.0.2',
-    'kubernetes==29.0.0',
+    'kubernetes==36.0.0',
     'openshift==0.13.2',
-    'setuptools-scm==9.2.2',
-    'setuptools>=80',
+    'setuptools-scm==10.0.5',
+    'setuptools>=82.0.1',
     'idna==3.10',
     'calver==2025.4.17',
-    'types-psutil==7.2.1.20251231',
-    'types-setuptools==76.0.0.20250313'
+    'types-psutil==7.2.2.20260518',
+    'types-setuptools==82.0.0.20260518'
 ]
