@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi9/python-312@sha256:0f311bae18e16ac903ef432ef27a96925b5bde589809d78fbbbdd8cd3e23b970
+FROM registry.access.redhat.com/ubi9/python-312@sha256:b8a1b4c1e0d944d76a3aa7583e21d416864c2f8b9dcc2e84b2632673fbd0928b
 
 LABEL description="This image provides a data collection service for segment"
 LABEL io.k8s.description="This image provides a data collection service for segment"
