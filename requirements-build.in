@@ -28,10 +28,7 @@ poetry-core>=1.0.0
 poetry-core>=2.0.0
 poetry_core>=1.0.0
 setuptools
-setuptools-scm>=7.1.0,<8.0
-setuptools-scm<11,>=8
-setuptools-scm>=8.0
-setuptools-scm>=8.2.0
+setuptools-scm==9.2.2
 setuptools<82.1,>=68
 setuptools>=40
 setuptools>=40.8.0
@@ -50,3 +47,5 @@ typing-extensions
 typing_extensions
 vcs-versioning>=1.0.0.dev0
 wheel
+maturin>=1.9.4
+setuptools-rust>=1.11.0
