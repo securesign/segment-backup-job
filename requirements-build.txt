@@ -324,3 +324,6 @@ setuptools==82.0.1 \
     # via
     #   -r requirements-build.in
     #   setuptools-scm
+maturin==1.9.4 \
+    --hash=sha256:235163a0c99bc6f380fb8786c04fd14dcf6cd622ff295ea3de525015e6ac40cf
+    # via cryptography (build dependency)
