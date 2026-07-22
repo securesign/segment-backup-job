@@ -115,9 +115,9 @@ charset-normalizer==3.4.9 \
     # via
     #   SegmentBackupJob (pyproject.toml)
     #   requests
-google-auth==2.56.0 \
-    --hash=sha256:6e88c10217e07a92bfd01cac8ee99e32ccfb08414c3102e6c5b8d58f37a0d1e0 \
-    --hash=sha256:f90fa030b569a92654b9d690665a073841df33d57487be53db583a9a0867a553
+google-auth==2.47.0 \
+    --hash=sha256:833229070a9dfee1a353ae9877dcd2dec069a8281a4e72e72f77d4a70ff945da \
+    --hash=sha256:c516d68336bfde7cf0da26aab674a36fedcf04b37ac4edd59c597178760c3498
     # via kubernetes
 idna==3.18 \
     --hash=sha256:7f952cbe720b688055e3f87de14f5c3e5fdaa8bc3928985c4077ca689de849a2 \
@@ -269,9 +269,9 @@ segment-analytics-python==2.3.6 \
     --hash=sha256:a8c5c0f542be3be39aa57cd77e7e6b85b2a3c348174bc1192a296aeb81626594 \
     --hash=sha256:b07779d90432399fdd08f8cbeb483139cab862b5dca1bb3f0711f415def776a8
     # via SegmentBackupJob (pyproject.toml)
-setuptools-scm==10.2.0 \
-    --hash=sha256:6cc5ac7da8e54d74e43503be2fa023eb7a1ca820d5c318e6ae20efc48110d6c7 \
-    --hash=sha256:ec8ea1738b92e42146a46e29a0e9de9ad462744c63cf9778677b95dfd605adde
+setuptools-scm==10.0.5 \
+    --hash=sha256:bbba8fe754516cdefd017f4456721775e6ef9662bd7887fb52ae26813d4838c3 \
+    --hash=sha256:f611037d8aae618221503b8fa89319f073438252ae3420e01c9ceec249131a0a
     # via SegmentBackupJob (pyproject.toml)
 six==1.17.0 \
     --hash=sha256:4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274 \
